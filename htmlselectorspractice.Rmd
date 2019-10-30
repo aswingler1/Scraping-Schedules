@@ -16,70 +16,68 @@ library("rvest")
 #http://ems.csuchico.edu/APSS/schedule/spr2020/MATH.shtml - works
 
 
-
-scheduleGrabber <- function(url)
+# my function to read the schedules
+read_class_schedule <- function(url)
 {
 
 
-schedulePage <- read_html(url)
-
-subject <- html_nodes(schedulePage, ".subj")
-subject
-
-catNum <- html_nodes(schedulePage, ".cat_num")
-catNum
-
-sect <- html_nodes(schedulePage, ".sect")
-sect
-
-title <- html_nodes(schedulePage, ".title")
-title
-
-instructor <- html_nodes(schedulePage, ".Instructor")
-instructor
-
-totalEnrollment <- html_nodes(schedulePage, ".enrtot")
-totalEnrollment
-
-
-# tb <- tibble(subject, catNum, sect, title, instructor, totalEnrollment)
-
-subjectText = html_text(subject)
-#removing the last row so all dataframes have 59 rows. Not a good solution, loses data. Should instead add blank row but can't figure out
-subjectText <- subjectText[-c(60)]
-subjectText
-
-catNumText = html_text(catNum)
-#removing the last row so all dataframes have 59 rows. Not a good solution, loses data. Should instead add blank row but can't figure out
-catNumText <- catNumText[-c(60)]
-catNumText
-
-sectText = html_text(sect)
-#removing the last row so all dataframes have 59 rows. Not a good solution, loses data. Should instead add blank row but can't figure out
-sectText <- sectText[-c(60)]
-sectText
-
-titleText = html_text(title)
-#removing the last row so all dataframes have 59 rows. Not a good solution, loses data. Should instead add blank row but can't figure out
-titleText <- titleText[-c(60)]
-titleText
- 
-instructorText = html_text(instructor)
-instructorText
-
-totalEnrollmentText = html_text(totalEnrollment)
-totalEnrollmentText
-
-
-scheduleTibble <- tibble(subjectText, catNumText, sectText, titleText, instructorText, totalEnrollmentText)
-
-return(scheduleTibble)
+  schedulePage <- read_html(url)
+  
+  subject <- html_nodes(schedulePage, "td.subj")
+  subject
+  
+  catNum <- html_nodes(schedulePage, "td.cat_num")
+  catNum
+  
+  sect <- html_nodes(schedulePage, "td.sect")
+  sect
+  
+  title <- html_nodes(schedulePage, "td.title")
+  title
+  
+  instructor <- html_nodes(schedulePage, "td.Instructor")
+  instructor
+  
+  totalEnrollment <- html_nodes(schedulePage, "td.enrtot")
+  totalEnrollment
+  
+  
+  
+  subjectText = html_text(subject)
+  subjectText
+  
+  catNumText = html_text(catNum)
+  catNumText
+  
+  sectText = html_text(sect)
+  sectText
+  
+  titleText = html_text(title)
+  titleText
+  
+  instructorText = html_text(instructor)
+  instructorText
+  
+  totalEnrollmentText = html_text(totalEnrollment)
+  totalEnrollmentText
+  
+  #making the tibble for the schedule passed in
+  scheduleTibble <- tibble(subject = subjectText, cat =  catNumText, section = sectText, title = titleText, instructor = instructorText, enrollment = totalEnrollmentText)
+  
+  return(scheduleTibble)
 
 }
 
+#chunk of code to call the function for each of the 4 schedules
 
-scheduleGrabber("http://ems.csuchico.edu/APSS/schedule/spr2019/CSCI.shtml")
-scheduleTibble
+csSp19 <- read_class_schedule("http://ems.csuchico.edu/APSS/schedule/spr2019/CSCI.shtml")
+csSp20 <- read_class_schedule("http://ems.csuchico.edu/APSS/schedule/spr2020/CSCI.shtml")
+maSp19 <- read_class_schedule("http://ems.csuchico.edu/APSS/schedule/spr2019/MATH.shtml")
+maSp20 <- read_class_schedule("http://ems.csuchico.edu/APSS/schedule/spr2020/MATH.shtml")
+
+#combinding everything into one tibble
+tibbleOfAllFour <- rbind(csSp19, csSp20, maSp19, maSp20)
+tibbleOfAllFour
 
 
 ```
