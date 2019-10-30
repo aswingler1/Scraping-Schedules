@@ -5,10 +5,20 @@ output: html_notebook
 ---
 
 ```{r}
+new.function(url)
+{
+
 library("tidyverse")
 library("rvest")
 
-schedulePage <- read_html("http://ems.csuchico.edu/APSS/schedule/spr2019/CSCI.shtml")
+#The 4 links it needs to work with
+#http://ems.csuchico.edu/APSS/schedule/spr2019/CSCI.shtml - works
+#http://ems.csuchico.edu/APSS/schedule/spr2020/CSCI.shtml - does not work
+#http://ems.csuchico.edu/APSS/schedule/spr2019/MATH.shtml - works
+#http://ems.csuchico.edu/APSS/schedule/spr2020/MATH.shtml - works
+
+
+schedulePage <- read_html(url)
 
 subject <- html_nodes(schedulePage, ".subj")
 subject
